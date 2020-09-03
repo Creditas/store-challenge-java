@@ -10,14 +10,14 @@ public class Order {
     private final Address address;
     private final List<OrderItem> items;
     private Temporal closedAt;
-    private Payment payment;
+    private boolean paid;
 
     public Order(Customer customer, Address address) {
         this.customer = customer;
         this.address = address;
         this.items = new ArrayList<>();
         this.closedAt = null;
-        this.payment = null;
+        this.paid = false;
     }
 
     public void addProduct(Product product, int quantity) throws Exception {
@@ -32,7 +32,7 @@ public class Order {
     }
 
     public void pay() throws Exception {
-        if (payment != null) {
+        if (paid) {
             throw new Exception("The order has already been paid");
         }
 
@@ -48,7 +48,7 @@ public class Order {
 
         closedAt = Instant.now();
 
-        payment = new Payment(this);
+        paid = true;
     }
 
     public int totalAmount() {
