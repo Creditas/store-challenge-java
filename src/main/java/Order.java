@@ -31,18 +31,24 @@ public class Order {
         items.add(new OrderItem(product, quantity));
     }
 
-    public void pay(String paymentMethod) throws Exception {
+    public void pay() throws Exception {
         if (payment != null) {
             throw new Exception("The order has already been paid");
         }
 
-        if (items.size() == 0) {
+        if (items.size() == 0) { // there are no items to be paid
             throw new Exception("Empty order can not be paid");
         }
 
-        payment = new Payment(this, paymentMethod);
+        for (OrderItem orderItem: this.items) {
+            if (orderItem.product().type().name().equals("PHYSICAL")) {
+                orderItem.addLabel("shipping");
+            }
+        }
 
         closedAt = Instant.now();
+
+        payment = new Payment(this);
     }
 
     public int totalAmount() {
@@ -51,5 +57,9 @@ public class Order {
 
     public Address address() {
         return this.address;
+    }
+
+    public List<OrderItem> items() {
+        return items;
     }
 }
